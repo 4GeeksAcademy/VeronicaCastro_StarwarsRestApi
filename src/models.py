@@ -74,8 +74,8 @@ class Favorite(db.Model):
     id=db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     user= db.relationship("User", back_populates= "favorites")
-    character_id = db.Column(db.Integer, db.ForeignKey("characters.id"))
-    planets_id = db.Column(db.Integer, db.ForeignKey("planets.id"))
+    character_id = db.Column(db.Integer, db.ForeignKey("characters.id"), nullable=True)
+    planets_id = db.Column(db.Integer, db.ForeignKey("planets.id"), nullable=True)
 
     def serialize(self):
         return {

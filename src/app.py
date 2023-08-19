@@ -154,15 +154,15 @@ def get_favorites(user_id):
 
 #Add a new favorite planet to the current user with the planet id = planet_id
 
-@app.route('/user/<int:user_id>/favorites/planets', methods=['POST'])
-def add_favorite_planet(user_id):
-    
+@app.route('/favorite/planet/<int:planet_id>', methods=['POST'])
+def add_favorite_planet(planet_id):
+    currentUser = 3
     request_body_favorite = request.get_json()
     
-    favs = Favorite.query.filter_by(user_id=user_id, planets_id=request_body_favorite["planets_id"]).first()
+    favs = Favorite.query.filter_by(planets_id=planet_id).one_or_none()
     if favs is None:
         newFav = Favorite(
-            user_id=user_id, planets_id=request_body_favorite["planets_id"])    
+            user_id=currentUser, character_id= None,  planets_id=request_body_favorite["planets_id"])    
         db.session.add(newFav)
         db.session.commit()
         return jsonify("Planet added to favorites"), 200
@@ -171,13 +171,14 @@ def add_favorite_planet(user_id):
 
 
 #Add new favorite people to the current user with the people id = people_id
-@app.route('/user/<int:user_id>/favorites/characters', methods=['POST'])
-def add_favorite_character(user_id):
+@app.route('/favorite/people/<int:people_id>', methods=['POST'])
+def add_favorite_character(people_id):
+    currentUser = 3
     request_body_favorite = request.get_json()
-    favs = Favorite.query.filter_by(user_id=user_id, character_id=request_body_favorite["character_id"]).first()
+    favs = Favorite.query.filter_by(character_id= people_id).one_or_none()
     if favs is None:
         newFav = Favorite(
-            user_id=user_id, character_id=request_body_favorite["character_id"])    
+            user_id=currentUser, character_id= request_body_favorite["character_id"],  planets_id=None)   
         db.session.add(newFav)
         db.session.commit()
         return jsonify("Character added to favorites"), 200
@@ -187,10 +188,10 @@ def add_favorite_character(user_id):
 
 #Delete favorite planet with the id = planet_id
 
-@app.route('/user/<int:user_id>/favorites/planets/', methods=['DELETE'])
-def delete_favorite_planet(user_id):
+@app.route('/favorite/planet/<int:planet_id>', methods=['DELETE'])
+def delete_favorite_planet(planet_id):
     request_body = request.get_json()
-    thatFav = Favorite.query.filter_by(user_id=user_id, planets_id=request_body["planets_id"]).first()
+    thatFav = Favorite.query.filter_by(planets_id= planet_id).one_or_none()
     if thatFav is None:
         raise APIException('Favorite not found', status_code=404)
     db.session.delete(thatFav)
@@ -200,10 +201,10 @@ def delete_favorite_planet(user_id):
 
 
 #Delete favorite people with the id = people_id
-@app.route('/user/<int:user_id>/favorites/characters/', methods=['DELETE'])
-def delete_favorite_character(user_id):
+@app.route('/favorite/people/<int:people_id>', methods=['DELETE'])
+def delete_favorite_character(people_id):
     request_body = request.get_json()
-    thatFav = Favorite.query.filter_by(user_id=user_id, character_id=request_body["character_id"]).first()
+    thatFav = Favorite.query.filter_by(character_id = people_id).one_or_none()
     if thatFav is None:
         raise APIException('Favorite not found', status_code=404)
     db.session.delete(thatFav)
